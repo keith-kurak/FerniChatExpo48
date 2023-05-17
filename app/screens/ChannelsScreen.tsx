@@ -16,21 +16,7 @@ import { MainTabScreenProps } from "../navigators/MainNavigator"
 import { spacing, colors } from "../theme"
 import { useHeader } from 'app/utils/useHeader'
 import { AppStackParamList } from 'app/navigators'
-
-const channels = [
-  {
-    id: "1",
-    name: "llamas-who-code",
-  },
-  {
-    id: "2",
-    name: "pizza-toppings",
-  },
-  {
-    id: "3",
-    name: "taylor-swifts-favorite-cars",
-  }
-  ]
+import { Channel, useStores } from 'app/models'
 
 export const ChannelsScreen: FC<MainTabScreenProps<"Channels">> = observer(function ChannelsScreen(
   _props,
@@ -41,9 +27,16 @@ export const ChannelsScreen: FC<MainTabScreenProps<"Channels">> = observer(funct
 
   const [newChannelName, setNewChannelName] = useState("")
 
+  const { channelStore } = useStores()
+
   const toggleAddChannelModal = () => {
     setNewChannelName("")
     setModalVisible(!isModalVisible)
+  }
+
+  const addChannel = () => {
+    channelStore.addChannel(newChannelName)
+    toggleAddChannelModal()
   }
 
   useHeader({
@@ -54,8 +47,8 @@ export const ChannelsScreen: FC<MainTabScreenProps<"Channels">> = observer(funct
 
   return (
     <Screen preset="fixed" safeAreaEdges={[]} contentContainerStyle={$screenContentContainer}>
-      <FlatList<any>
-        data={channels}
+      <FlatList<Channel>
+        data={channelStore.channels}
         contentContainerStyle={$flatListContentContainer}
         ListEmptyComponent={
           <EmptyState
@@ -85,7 +78,7 @@ export const ChannelsScreen: FC<MainTabScreenProps<"Channels">> = observer(funct
             placeholder="Channel Name"
             onChangeText={(text) => setNewChannelName(text)}
           />
-          <Button text="Add Channel" onPress={() => {}} />
+          <Button text="Add Channel" onPress={addChannel} />
         </View>
       </Modal>
     </Screen>

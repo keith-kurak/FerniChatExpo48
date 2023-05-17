@@ -44,6 +44,8 @@ const { channelStore } = useStores()
 data={channelStore.channels}
 ```
 You'll notice that the list is empty now
+
+(you can also update that `Flatlist` type, e.g., `FlatList<Channel>`)
 3. Add a function to add a channel to the store and close the modal
 ```
  const addChannel = () => {
