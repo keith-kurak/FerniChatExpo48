@@ -1,17 +1,19 @@
 // Interested in migrating from FlatList to FlashList? Check out the recipe in our Ignite Cookbook
 // https://ignitecookbook.com/docs/recipes/MigratingToFlashList
 import { observer } from "mobx-react-lite"
-import React, { FC, } from "react"
+import React, { FC, useState } from "react"
 import {
   FlatList,
   ImageStyle,
   ViewStyle,
+  View,
 } from "react-native"
+import Modal from "react-native-modal"
 import { NavigationProp, useNavigation } from "@react-navigation/native"
-import { EmptyState, Screen, ListItem } from "../components"
+import { EmptyState, Screen, ListItem, TextField, Button } from "../components"
 import { isRTL } from "../i18n"
 import { MainTabScreenProps } from "../navigators/MainNavigator"
-import { spacing } from "../theme"
+import { spacing, colors } from "../theme"
 import { useHeader } from 'app/utils/useHeader'
 import { AppStackParamList } from 'app/navigators'
 
@@ -34,9 +36,22 @@ export const ChannelsScreen: FC<MainTabScreenProps<"Channels">> = observer(funct
   _props,
 ) {
   const navigation =  useNavigation<NavigationProp<AppStackParamList>>()
+
+  const [isModalVisible, setModalVisible] = useState(false)
+
+  const [newChannelName, setNewChannelName] = useState("")
+
+  const toggleAddChannelModal = () => {
+    setNewChannelName("")
+    setModalVisible(!isModalVisible)
+  }
+
   useHeader({
-    title: 'Channels'
+    title: 'Channels',
+    rightText: "Add",
+    onRightPress: toggleAddChannelModal,
   })
+
   return (
     <Screen preset="fixed" safeAreaEdges={[]} contentContainerStyle={$screenContentContainer}>
       <FlatList<any>
@@ -61,6 +76,18 @@ export const ChannelsScreen: FC<MainTabScreenProps<"Channels">> = observer(funct
           />
         )}
       />
+      <Modal isVisible={isModalVisible} onBackdropPress={toggleAddChannelModal}>
+        <View style={{ backgroundColor: colors.background }}>
+          <TextField
+            autoFocus
+            value={newChannelName}
+            containerStyle={{ margin: spacing.small }}
+            placeholder="Channel Name"
+            onChangeText={(text) => setNewChannelName(text)}
+          />
+          <Button text="Add Channel" onPress={() => {}} />
+        </View>
+      </Modal>
     </Screen>
   )
 })
