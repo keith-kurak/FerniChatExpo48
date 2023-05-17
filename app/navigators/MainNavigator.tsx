@@ -38,6 +38,7 @@ export function MainNavigator() {
         tabBarInactiveTintColor: colors.text,
         tabBarLabelStyle: $tabBarLabel,
         tabBarItemStyle: $tabBarItem,
+        tabBarLabelPosition: "below-icon",
       }}
     >
       <Tab.Screen
