@@ -57,3 +57,6 @@ You'll notice that the list is empty now
 ```
 <Button text="Add Channel" onPress={addChannel} />
 ```
+
+### Bonus: start scaffolding chat screen
+Let's wire up `react-native-gifted-chat` in demo mode, with Slack-style customizations applied.

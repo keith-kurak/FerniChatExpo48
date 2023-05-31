@@ -190,3 +190,13 @@ tabBarLabelPosition: "below-icon",
 
 More TODO's:
 - those side tabs on web, nasty (maybe fixed by metro)
+
+
+### Bonus: Between Part 1 and 2
+- Boring part: fix the names that don't really match what we're doing. If you want to sync with later lessons, these are the names we'll use:
+  - ChannelsScreen
+  - ChatScreen
+  - LoginScreen
+  - SettingsScreen
+  - DemoNavigator -> MainNavigator
+- Fun part: Add the "Add channel button" to ChannelsScreen
