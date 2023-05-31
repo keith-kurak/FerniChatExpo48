@@ -2,7 +2,9 @@
 ## Goal
 Initialize your MobX state tree model with a canned list of channels and display it on the channels tab. Watch the list update as you add channels.
 ## Tasks
-1.
+1. Create Channel and ChannelStore MST models
+2. Customize stores to include channel properties
+3. Wire up Add Channel functionality to MST stores
 ## Useful info
 
 ## Since you've been gone
