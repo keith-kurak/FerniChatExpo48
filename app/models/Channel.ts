@@ -7,7 +7,7 @@ import { withSetPropAction } from "./helpers/withSetPropAction"
 export const ChannelModel = types
   .model("Channel")
   .props({
-    id: types.identifierNumber,
+    id: types.identifier,
     name: types.string,
   })
   .actions(withSetPropAction)

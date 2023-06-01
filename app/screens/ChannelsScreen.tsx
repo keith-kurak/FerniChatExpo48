@@ -35,6 +35,7 @@ export const ChannelsScreen: FC<MainTabScreenProps<"Channels">> = observer(funct
   }
 
   const addChannel = () => {
+    if (!newChannelName) return;
     channelStore.addChannel(newChannelName)
     toggleAddChannelModal()
   }
@@ -48,7 +49,7 @@ export const ChannelsScreen: FC<MainTabScreenProps<"Channels">> = observer(funct
   return (
     <Screen preset="fixed" safeAreaEdges={[]} contentContainerStyle={$screenContentContainer}>
       <FlatList<Channel>
-        data={channelStore.channels}
+        data={channelStore.channelsForList}
         contentContainerStyle={$flatListContentContainer}
         ListEmptyComponent={
           <EmptyState
