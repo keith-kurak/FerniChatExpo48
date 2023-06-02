@@ -54,7 +54,7 @@ interface BaseScreenProps {
    */
   KeyboardAvoidingViewProps?: KeyboardAvoidingViewProps
 
-  isLoading: boolean
+  isLoading?: boolean
 }
 
 interface FixedScreenProps extends BaseScreenProps {

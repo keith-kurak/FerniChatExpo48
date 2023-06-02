@@ -52,7 +52,6 @@ export const AuthenticationStoreModel = types
     function afterCreate() {
       const auth = getAuth()
       onAuthStateChanged(auth, (user) => {
-        console.log(auth);
         if (user) {
           store.setUser(user)
         } else {

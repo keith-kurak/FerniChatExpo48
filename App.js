@@ -43,11 +43,14 @@ const reactNativeLocalPersistence =
     },
   });
 
-initializeAuth(app,
-  {
-    persistence: reactNativeLocalPersistence
-  }
-)
+try  {
+  initializeAuth(app,
+    {
+      persistence: reactNativeLocalPersistence
+    }
+  )
+} catch (e) {}
+
 
 SplashScreen.preventAutoHideAsync()
 
