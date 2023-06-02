@@ -14,7 +14,8 @@
       "backgroundColor": "#191015"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/645a1eac-2dc4-4d13-9277-7204839249c4"
     },
     "jsEngine": "hermes",
     "assetBundlePatterns": [
@@ -55,6 +56,15 @@
     },
     "plugins": [
       "expo-localization"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "645a1eac-2dc4-4d13-9277-7204839249c4"
+      }
+    },
+    "owner": "keith-kurak",
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    }
   }
 }
