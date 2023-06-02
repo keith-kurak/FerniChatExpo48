@@ -27,7 +27,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-const reactNativeLocalPersistence =
+const myReactNativeLocalPersistence =
   getReactNativePersistence({
     getItem(...args) {
       // Called inline to avoid deprecation warnings on startup.
@@ -46,7 +46,7 @@ const reactNativeLocalPersistence =
 try  {
   initializeAuth(app,
     {
-      persistence: reactNativeLocalPersistence
+      persistence: myReactNativeLocalPersistence
     }
   )
 } catch (e) {}

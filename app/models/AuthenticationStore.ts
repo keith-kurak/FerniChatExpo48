@@ -55,7 +55,6 @@ export const AuthenticationStoreModel = types
         if (user) {
           store.setUser(user)
         } else {
-          console.log("not logged in");
           store.setUser(undefined)
         }
       })

@@ -161,6 +161,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeAuth, getReactNativePersistence } from "firebase/auth"
 ```
 
-
-
 **TEST IT** You should be able to login now.
+
+### 5. Add security rules
+Update your security rules in Firebase (Firestore -> Rules) as such:
+```
+rules_version = '2'
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if request.auth != null
+    }
+  }
+}
+```
