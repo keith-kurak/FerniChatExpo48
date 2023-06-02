@@ -18,29 +18,29 @@ export const ChannelStoreModel = types
   .props({
     channels: types.array(ChannelModel),
   })
-  .views((self) => ({
+  .views((store) => ({
     get channelsForList() {
-      return sortBy(self.channels.slice(), c => c.name.toLowerCase());
+      return sortBy(store.channels.slice(), c => c.name.toLowerCase());
     },
   }))
   .actions(withSetPropAction)
   // this allows TS to register updateChannels as an action for use in the next block
   // see https://mobx-state-tree.js.org/tips/typescript#typing-self-in-actions-and-views
-  .actions((self) => ({
+  .actions((store) => ({
     updateChannels(querySnapshot) {
-      self.channels.clear();
+      store.channels.clear();
       querySnapshot.forEach((doc) => {
-        self.channels.push({ id: doc.id, name: doc.data().name });
+        store.channels.push({ id: doc.id, name: doc.data().name });
       });
     }
   }))
-  .actions((self) => {
+  .actions((store) => {
     let unsubscribeFromFirebaseStream;
-    function afterAttach() {
+    function afterCreate() {
       const db = getFirestore();
       const q = query(collection(db, "channels"));
       unsubscribeFromFirebaseStream = onSnapshot(q, (querySnapshot) => {
-        self.updateChannels(querySnapshot);
+        store.updateChannels(querySnapshot);
       });
     }
 
@@ -57,7 +57,7 @@ export const ChannelStoreModel = types
     });
 
     return {
-      afterAttach,
+      afterCreate,
       beforeDestroy,
       addChannel,
     }
