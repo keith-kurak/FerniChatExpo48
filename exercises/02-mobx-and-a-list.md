@@ -13,8 +13,8 @@ Let's make it add data locally by wiring reading and writing of data to an MST s
 ## How to do it
 ### 1. Add a ChannelStore with a channel model
 We're going to create a model for individual channels and a model for storing a list of channels and interacting with it:
-- Run `npx ignite-cli generate model Channel`
-- Run `npx ignite-cli generate model ChannelStore`
+- [ ] Run `npx ignite-cli generate model Channel`
+- [ ] Run `npx ignite-cli generate model ChannelStore`
 
 Add a props block to `Channel`:
 ```diff
@@ -28,20 +28,20 @@ Add a props block to `Channel`:
 ```
 (I'm just showing these diffs once to demonstrate in context how to add these blocks to MST models. You just chain them, the order doesn't really matter. You can create a new block or add to the existing `props` block, it doesn't really matter)
 
-Then add channels to the `ChannelStore`
+- [ ] Then add channels to the `ChannelStore`
 ```ts
 .props({
   channels: types.array(ChannelModel),
 })
 ```
 
-Be sure to import `ChannelModel` into **ChannelStore.ts**, e.g.:
+- [ ] Be sure to import `ChannelModel` into **ChannelStore.ts**, e.g.:
 ```ts
 import { ChannelModel } from 'app/models/Channel'
 ```
 ⚠️ Usually VS Code's "fix it" recommendations work for me, but I had issues when I did that here and tried importing from `apps/models`. Not sure why, but heads up for now!
 
-Add an `addChannel` function to `ChannelStore`:
+- [ ] Add an `addChannel` function to `ChannelStore`:
 ```ts
 .actions((self) => ({
   addChannel(name: string) {
@@ -50,19 +50,19 @@ Add an `addChannel` function to `ChannelStore`:
 }))
 ```
 ### 2. Wire the list to MST
-1. Use the stores in `ChannelListScreen`:
+- [ ] Use the stores in `ChannelListScreen`:
 ```ts
 const { channelStore } = useStores()
 ```
 (update imports, blah blah- VS Code fix it actually work fine here)
-2. Update the data in the FlatList to use the store:
+- [ ] Update the data in the FlatList to use the store:
 ```ts
 data={channelStore.channels}
 ```
 🏃**Try it!** The list is empty now
 
 (you can also update that `Flatlist` type, e.g., `FlatList<Channel>` using the types from **app/models**, I won't tell anyone if you don't, though)
-3. Add a function to add a channel to the store and close the modal
+- [ ] Add a function to add a channel to the store and close the modal
 ```ts
  const addChannel = () => {
    if (!newChannelName) return
@@ -70,7 +70,7 @@ data={channelStore.channels}
    toggleAddChannelModal()
 }
 ```
-4. Update the modal to call that function when add is pressed
+- [ ] Update the modal to call that function when add is pressed
 ```ts
 <Button text="Add Channel" onPress={addChannel} />
 ```
