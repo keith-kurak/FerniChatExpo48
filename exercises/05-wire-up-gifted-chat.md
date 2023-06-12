@@ -13,7 +13,7 @@ We now have some Firebase code to read/ write chat messages for a channel, let's
 
 ## How to do it
 ### 1. Use ID's when navigating from Channel -> Chat
-#### 1a. Fix those types!
+#### a. Fix those types!
 Remember where we set the parameters to use `channelName`? Now it should be `channelId`, so we can read info about the channel from the store while on the chat screen.
 
 Fix `AppStackParamList` in **AppNavigator.tsx**:
@@ -42,7 +42,7 @@ Update onPress in `ChannelListScreen` to pass channel ID:
 
 `ChatScreen` is still referencing `channelName`, though...
 
-#### 1b. A helper for the chat screen.
+#### b. A helper for the chat screen.
 Add a new view function to `ChannelStore`:
 ```ts
 channelForId(id) {
@@ -67,7 +67,7 @@ useHeader({
 ### 2. Send messages without looking!
 So we can see some progress before coding everything, we'll implement "send" first, the opposite we did with channels.
 
-#### 2a. Update ChannelStore
+#### a. Update ChannelStore
 In a bigger app, I'd probably put messages in their own stores and page them out of a list by channel ID, but we're keeping things simple and putting everything in the `ChannelStore`.
 
 Add `sendMessage` to the actions in `ChannelStore`:
@@ -103,7 +103,7 @@ import {
 } from "firebase/firestore";
 ```
 
-#### 2b. Update ChatScreen
+#### b. Update ChatScreen
 Add `useStores` to `ChatScreen`, pass the relevant stuff to `Chat`:
 ```ts
 const { channelStore, authenticationStore } = useStores()
@@ -144,7 +144,7 @@ const onSend = useCallback((messages = []) => {
 
 ### 3. Stream messages and view them
 Finally, we'll stream messages from a chat much like we did with channels.
-#### 3a. Wire up a message model
+#### a. Wire up a message model
 Run `npx ignite-cli generate model Message` to create the `MessageModel`.
 
 Setup the props as such in `MessageModel`:
@@ -158,7 +158,7 @@ Setup the props as such in `MessageModel`:
   })
 ```
 
-#### 3b. Stream the current channel's messages in ChannelStore
+#### b. Stream the current channel's messages in ChannelStore
 
 In `ChannelStore` add a prop for the messages:
 ```ts
@@ -213,7 +213,7 @@ const stopStreamingCurrentChannelMessages = () => {
 
 Be sure to return them with the other actions at the end of the actions block.
 
-#### 3c. Wire the streamed messages to ChatScreen
+#### c. Wire the streamed messages to ChatScreen
 Setup an effect to start and stop streaming at the top of `ChatScreen`:
 ```ts
 useEffect(() => {

@@ -10,14 +10,14 @@ Make the login screen actually work, using Firebase email/ password authenticati
 
 ## How to do it
 ### 1. Setup email/password auth in Firebase Console
-a. In Firebase console, go to Build -> Authentication
-b. Select email/ password login method
-c. UNSELECT "email link" (I actually love this method and think we all should use it long-term, but it's out of scope for today)
-d. Save
+1) In Firebase console, go to Build -> Authentication
+2) Select email/ password login method
+3) UNSELECT "email link" (I actually love this method and think we all should use it long-term, but it's out of scope for today)
+4) Save
 
-#### 1a. Create a test user
-a. Inside the Authentication dashboard still, go to Users.
-b. Create a new user that you will use to test.
+#### a. Create a test user
+1) Inside the Authentication dashboard still, go to Users.
+2) Create a new user that you will use to test.
 TIP: Use gmail aliases, e.g., youremail+fernichat1@gmail.com. Then you can create multiple accounts.
 
 ### 2. Wire up AuthenticationStore
@@ -107,7 +107,7 @@ New first actions block:
 ### 3. Wire up login screen
 Since the old `AuthenticationStore.setAuthEmail` is gone, we need to clean up local state to support all form fields.
 
-#### 3a. OMG hooks!
+#### a. OMG hooks!
 In `LoginScreen` setup local state like this:
 ```ts
 const [authEmail, setAuthEmail] = useState("")
@@ -125,7 +125,7 @@ const {
 
 Get rid of the first `useEffect()` so it doesn't default in an email and password. Also, get rid of the second `useEffect()` hook!
 
-#### 3b. Fix that form!
+#### b. Fix that form!
 Make a new `onPressLogin` callback that sends the email and password to the store's login method:
 ```ts
 const onPressLogin = useCallback(() => {

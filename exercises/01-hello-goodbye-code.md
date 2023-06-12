@@ -63,7 +63,7 @@ Then, fix the icons and names for the remaining tabs. Rename them "Channels" and
 
 🏃**Try it!** You should have only two tabs, and they should be Channels and Settings tabs. Of course, the Channels tab will actually have podcast episodes on it ;-)
 
-#### a2. Fix just enough names to not drive us nuts
+#### b. Fix just enough names to not drive us nuts
 We're going to just fix the names of the files we'll be working on the most, so we don't have to think about podcasts when we really want to think about channels.
 
 In **DemoNavigator.tsx**, set `DemoTabParamList` to:
@@ -95,7 +95,7 @@ We want a traditional, fixed navigation header with a list of "channels". We'll 
 
 🏃**Try it!** No visual changes, but the two tabs should still work.
 
-1. In **ChannelListScreen.tsx**, delete the `EpisodeCard` component (below `ChannelListScreen`) with a simple thing that displays the name of a channel:
+In **ChannelListScreen.tsx**, delete the `EpisodeCard` component (below `ChannelListScreen`) with a simple thing that displays the name of a channel:
 ```ts
 const ChannelItem = observer(function ChannelItem({
   channel,
@@ -112,7 +112,7 @@ Update your imports to include `ListItem`, another component from the Ignite com
 import { /** ... **/ ListItem } from "../components"
 ```
 
-2. Delete the entire contents of `ChannelListScreen`, replace them with this:
+Delete the entire contents of `ChannelListScreen`, replace them with this:
 ```ts
   // ignite syntactic sugar for React Nav's screen prop access
   useHeader({
