@@ -73,7 +73,7 @@ export type DemoTabParamList = {
   Settings: undefined
 }
 ```
-- Rename `DemoPodcastListScreen` to `ChannelListScreen` (rename file and the component name)
+Rename `DemoPodcastListScreen` to `ChannelListScreen` (rename file and the component name)
 After this, the declaration should look like:
 ```ts
 export const ChannelListScreen: FC<DemoTabScreenProps<"ChannelList">> = observer(
