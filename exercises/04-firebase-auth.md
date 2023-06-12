@@ -23,12 +23,12 @@ TIP: Use gmail aliases, e.g., youremail+fernichat1@gmail.com. Then you can creat
 ### 2. Wire up AuthenticationStore
 We're going to modify `AuthenticationStore` significantly. It's just easier this way. We want to keep email/ password as ephemeral form-only state, and save the `user` object to indicate if the user is logged in.
 
-New imports:
+- [ ] New imports:
 ```ts
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth"
 ```
 
-New props and views:
+- [ ] New props and views:
 ```ts
 .props({
     user: types.frozen(),
@@ -44,7 +44,7 @@ New props and views:
 
 The "frozen" type is just kind of like `any` - it could be whatever. We could figure out the exact type of the Firebase object, or we could store a subset of it, but maybe another day.
 
-New first actions block:
+- [ ] New first actions block:
 ```ts
 .actions((self) => {
   const login = flow(function* login({ email, password }) {
@@ -84,7 +84,7 @@ New first actions block:
   ```
   `setUser` is there so we can set the user safely in a callback in the next action block. Notice that `login` doesn't actually set the user, that's because there's a Firebase listener that will automatically update as auth state changes.
 
-  Finally, add a second action block to setup a listener for auth state change:
+  - [ ] Finally, add a second action block to setup a listener for auth state change:
   ```ts
   .actions((self) => {
     function afterCreate() {
@@ -108,7 +108,7 @@ New first actions block:
 Since the old `AuthenticationStore.setAuthEmail` is gone, we need to clean up local state to support all form fields.
 
 #### a. OMG hooks!
-In `LoginScreen` setup local state like this:
+- [ ] In `LoginScreen` setup local state like this:
 ```ts
 const [authEmail, setAuthEmail] = useState("")
 const [authPassword, setAuthPassword] = useState("")
@@ -116,33 +116,33 @@ const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
 ```
 (you can get rid of `isSubmitted`, `attemptsCount` state)
 
-Pull in your stores functionality as another hook:
+- [ ] Pull in your stores functionality as another hook:
 ```ts
 const {
     authenticationStore: { login, loginError, isLoading },
   } = useStores()
 ```
 
-Get rid of the first `useEffect()` so it doesn't default in an email and password. Also, get rid of the second `useEffect()` hook!
+- [ ] Get rid of the first `useEffect()` so it doesn't default in an email and password. Also, get rid of the second `useEffect()` hook!
 
 #### b. Fix that form!
-Make a new `onPressLogin` callback that sends the email and password to the store's login method:
+- [ ] Make a new `onPressLogin` callback that sends the email and password to the store's login method:
 ```ts
 const onPressLogin = useCallback(() => {
     login({ email: authEmail, password: authPassword })
   }, [authEmail, authPassword])
 ```
 
-Set the events that used the `login` function to use `onPressLogin` instead.
+- [ ] Set the events that used the `login` function to use `onPressLogin` instead.
 
-Replace `error` references with `loginError`. This won't make the prettiest error messages, but it will do for now.
+- [ ] Replace `error` references with `loginError`. This won't make the prettiest error messages, but it will do for now.
 
 🏃**Try it!** You should be able to login now.
 
 ### 4. OMG why isn't the auth state persisting?
 Hooboy, Firebase team really throws you for a loop. It turns out that the default auth persistence provider is in-memory, so you get logged out whenever you reload! You can override it to a local storage provider... which doesn't work with React Native 71 :-/
 
-So, jam this code into App.js, right after the Firebase init. Probably good to refactor this into a different file if you're doing the real thing.
+- [ ] So, jam this code into App.js, right after the Firebase init. Probably good to refactor this into a different file if you're doing the real thing.
 
 ```ts
 // Initialize Firebase
@@ -171,7 +171,7 @@ initializeAuth(app,
 )
 ```
 
-New imports:
+- [ ] New imports:
 ```ts
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { initializeAuth, getReactNativePersistence } from "firebase/auth"
@@ -180,7 +180,7 @@ import { initializeAuth, getReactNativePersistence } from "firebase/auth"
 🏃**Try it!** You should be able to login now and stay logged in even after a full refresh.
 
 ### 5. Add security rules
-Update your security rules in Firebase (Firestore -> Rules) as such:
+- [ ] Update your security rules in the Firebase Console (Firestore -> Rules) as such:
 ```
 rules_version = '2'
 service cloud.firestore {
