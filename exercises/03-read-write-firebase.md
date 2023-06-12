@@ -31,7 +31,7 @@ This will be done in the [Firebase Console](https://console.firebase.google.com/
 ### 2. Start reading in your MST model
 #### a. Get data flowing in your stores
 In `ChannelStore`, we will update it to subscribe to Firebase, updating `channels` as Firebase updates.
-2. You'll need some new imports:
+- [ ] You'll need some new imports:
 ```ts
 import {
   collection,
@@ -42,7 +42,7 @@ import {
 } from "firebase/firestore";
 ```
 
-Hook into MST lifecycle functions to subscribe to the collection on startup. Change your `actions` block to look like this:
+- [ ] Hook into MST lifecycle functions to subscribe to the collection on startup. Change your `actions` block to look like this:
   ```ts
   .actions((self) => {
     let unsubscribeFromFirebaseStream;
@@ -70,9 +70,9 @@ Hook into MST lifecycle functions to subscribe to the collection on startup. Cha
   })
   ```
 
-  Notice we're changing the function body from returning an object directly to including procedural code.
+Notice we're changing the function body from returning an object directly to including procedural code.
 
-Add a separate `actions` block above the existing one:
+- [ ] Add a separate `actions` block above the existing one:
 ```ts
  .actions((self) => ({
     updateChannels(querySnapshot) {
@@ -89,7 +89,7 @@ We enclose `updateChannels` in a separate action because MobX observers will not
 
 #### b. Tweak the data flow to show things in alphabetical order
 
-One more time in `ChannelStore`, add a `views` block to your model to make a nice view for reading the list in order:
+- [ ] One more time in `ChannelStore`, add a `views` block to your model to make a nice view for reading the list in order:
 ```ts
 .views((self) => ({
     get channelsForList() {
@@ -100,13 +100,13 @@ One more time in `ChannelStore`, add a `views` block to your model to make a nic
 
 (don't forget the corresponding import from `lodash`)
 
-Update `ChannelListScreen` to have the `FlatList` read from the new view prop:
+- [ ] Update `ChannelListScreen` to have the `FlatList` read from the new view prop:
 ```data={channelStore.channelsForList}```
 
 🏃**Try it!** Add a channel directly in the Firestore console, it should show up in the Channels list. That's what subscriptions do!
 
 ### 3. Wire up adding a channel
-Update `addChannel` as such:
+- [ ] Update `addChannel` as such:
 ```ts
 const addChannel = flow(function* addChannel(name) {
   const db = getFirestore();
