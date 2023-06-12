@@ -69,7 +69,7 @@ function Chat({ messages, onSendMessage, user, channelId }) {
       onSend={onSend}
       renderMessage={renderMessage}
       user={{
-        _id: user.uid,
+        _id: user? user.uid : null,
       }}
     />
   )

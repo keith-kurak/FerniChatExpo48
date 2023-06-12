@@ -8,17 +8,29 @@ We now have some Firebase code to read/ write chat messages for a channel, let's
 4. Read messages onto ChatScreen
 ## Useful info
 
+## Since you've been gone
+- Not a whole lot... we added a loading overlay for use while logging in.
+
 ## How to do it
 ### 1. Use ID's when navigating from Channel -> Chat
-1. Add a new view function to `ChannelStore`:
+#### 1a. Fix those types!
+Remember where we set the parameters to use `channelName`? Now it should be `channelId`, so we can read info about the channel from the store while on the chat screen.
+
+Fix `AppStackParamList` in **AppNavigator.tsx**:
+```diff
+export type AppStackParamList = {
+  Welcome: undefined
+  Login: undefined // @demo remove-current-line
+  Demo: NavigatorScreenParams<MainTabParamList> // @demo remove-current-line
+  // 🔥 Your screens go here
+--  Chat: { channelName: string },
+++  Chat: { channelId: string },
+	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+}
 ```
-channelForId(id) {
-  return store.channels.find(c => c.id === id);
-},
-```
-Just for convenience. These don't cache, BTW.
-2. Update onPress in `ChannelsScreen` to pass channel ID:
-```
+
+Update onPress in `ChannelListScreen` to pass channel ID:
+```ts
 <ChannelItem
   key={item.id}
   channel={item}
@@ -27,8 +39,20 @@ Just for convenience. These don't cache, BTW.
   }}
 />
 ```
-3. In `ChatScreen`, use the ID to get the title:
+
+`ChatScreen` is still referencing `channelName`, though...
+
+#### 1b. A helper for the chat screen.
+Add a new view function to `ChannelStore`:
+```ts
+channelForId(id) {
+  return self.channels.find(c => c.id === id);
+},
 ```
+This is just for convenience. These parameterized views don't cache, BTW.
+
+In `ChatScreen`, use the ID to get the title:
+```ts
 const channelId = route.params.channelId;
 
 useHeader({
@@ -38,13 +62,16 @@ useHeader({
 })
 ```
 
-**TEST IT**: everything should work the same (should still see channel in the title of the screen)
+🏃**Try it!** Everything should work the same (should still see channel in the title of the screen)
 
-### 2. Add a send function and use it to send messages, check them directly in Firebase
+### 2. Send messages without looking!
+So we can see some progress before coding everything, we'll implement "send" first, the opposite we did with channels.
+
+#### 2a. Update ChannelStore
 In a bigger app, I'd probably put messages in their own stores and page them out of a list by channel ID, but we're keeping things simple and putting everything in the `ChannelStore`.
 
-1. Add `sendMessage` to the actions in `ChannelStore`:
-```
+Add `sendMessage` to the actions in `ChannelStore`:
+```ts
 const sendMessage = flow(function* sendMessage({ user, text, channelId }) {
   const db = getFirestore();
   const channelsCollection = collection(db, "channels");
@@ -64,7 +91,7 @@ const sendMessage = flow(function* sendMessage({ user, text, channelId }) {
 ```
 
 There's new imports, too:
-```
+```ts
 import {
   collection,
   query,
@@ -76,12 +103,9 @@ import {
 } from "firebase/firestore";
 ```
 
-2. Update parameters in `Chat` component inside of **ChatScreen.ts**:
-```
-function Chat({ onSendMessage, user, channelId }) {
-```
-3. Add `useStores` to `ChatScreen`, pass the relevant stuff to `Chat`:
-```
+#### 2b. Update ChatScreen
+Add `useStores` to `ChatScreen`, pass the relevant stuff to `Chat`:
+```ts
 const { channelStore, authenticationStore } = useStores()
 
 // ...
@@ -89,11 +113,17 @@ const { channelStore, authenticationStore } = useStores()
 <Chat
   user={authenticationStore.user}
   onSendMessage={channelStore.sendMessage}
-  channelId={channelId}
+  channelId={route.params.channelId}
 />
 ```
-4. Wrap everything inside a callback inside `Chat` and pass that into GiftedChat:
+
+Update parameters in `Chat` component inside of **ChatScreen.ts**:
+```ts
+function Chat({ onSendMessage, user, channelId }) {
 ```
+
+Inside the `Chat` component still, wrap the sending stuff into a callback and pass that into `GiftedChat`:
+```ts
 const onSend = useCallback((messages = []) => {
   onSendMessage({user, text: messages[0].text, channelId })
 }, [])
@@ -110,12 +140,15 @@ const onSend = useCallback((messages = []) => {
 />
 ```
 
-**TEST IT**: You should be able to send a message, not see anything in the UI, but it does show up in Firebase when you look at a channel in the console.
+🏃**Try it!** You should be able to send a message, not see anything in the UI, but it does show up in Firebase when you look at a channel in the console.
 
 ### 3. Stream messages and view them
-1. Run `npx ignite-cli generate model Message` to create the `MessageModel`.
-2. Setup the props as such:
-```
+Finally, we'll stream messages from a chat much like we did with channels.
+#### 3a. Wire up a message model
+Run `npx ignite-cli generate model Message` to create the `MessageModel`.
+
+Setup the props as such in `MessageModel`:
+```ts
   .props({
     id: types.identifier,
     uid: types.string,
@@ -124,23 +157,28 @@ const onSend = useCallback((messages = []) => {
     text: types.string,
   })
 ```
-3. In `ChannelStore` add a prop for the messages:
-```currentChannelMessages: types.array(MessageModel),```
+
+#### 3b. Stream the current channel's messages in ChannelStore
+
+In `ChannelStore` add a prop for the messages:
+```ts
+  currentChannelMessages: types.array(MessageModel),
+```
 
 Add a view for the messages:
-```
+```ts
 get currentChannelMessagesForList() {
-  return sortBy(store.currentChannelMessages.slice(), m => m.time);
+  return sortBy(self.currentChannelMessages.slice(), m => m.time);
 }
 ```
 
-And add an action in the first action block for updating them:
-```
+Add an action in the first action block for updating them:
+```ts
 updateCurrentChannelMessages(querySnapshot) {
-  store.currentChannelMessages.clear();
+  self.currentChannelMessages.clear();
   querySnapshot.forEach((doc) => {
     const data = doc.data();
-    store.currentChannelMessages.push({
+    self.currentChannelMessages.push({
       id: doc.id,
       uid: data.uid,
       username: data.username,
@@ -152,8 +190,9 @@ updateCurrentChannelMessages(querySnapshot) {
   });
 }
 ```
-4. Add actions for starting and stopping streaming. These will be used when entering the chat screen for a particular channel:
-```
+
+Add actions for starting and stopping streaming. These will be used when entering the chat screen for a particular channel:
+```ts
 let unsubscribeFromChannelMessagesFeed; // we could later use this to tear down on logout... or something
 const startStreamingMessagesForChannel = (channelId) => {
   const db = getFirestore();
@@ -162,48 +201,44 @@ const startStreamingMessagesForChannel = (channelId) => {
   const messagesCollection = collection(channelDoc, "messages");
   const q = query(messagesCollection);
   unsubscribeFromChannelMessagesFeed = onSnapshot(q, (querySnapshot) => {
-    store.updateCurrentChannelMessages(querySnapshot);
+    self.updateCurrentChannelMessages(querySnapshot);
   });
 };
 
 const stopStreamingCurrentChannelMessages = () => {
-  store.currentChannelMessages.clear();
-  unsubscribeFromChannelMessagesFeed();
-};
-```
-Be sure to return them with the other actions.
-5. In `ChatScreen`, pass the messages to `Chat`:
-```
-let unsubscribeFromChannelMessagesFeed; // we could later use this to tear down on logout... or something
-const startStreamingMessagesForChannel = (channelId) => {
-  const db = getFirestore();
-  const channelsCollection = collection(db, "channels");
-  const channelDoc = doc(channelsCollection, channelId);
-  const messagesCollection = collection(channelDoc, "messages");
-  const q = query(messagesCollection);
-  unsubscribeFromChannelMessagesFeed = onSnapshot(q, (querySnapshot) => {
-    store.updateCurrentChannelMessages(querySnapshot);
-  });
-};
-
-const stopStreamingCurrentChannelMessages = () => {
-  store.currentChannelMessages.clear();
+  self.currentChannelMessages.clear();
   unsubscribeFromChannelMessagesFeed();
 };
 ```
 
-And setup an effect to start and stop streaming at the top of `ChatScreen`:
-```
+Be sure to return them with the other actions at the end of the actions block.
+
+#### 3c. Wire the streamed messages to ChatScreen
+Setup an effect to start and stop streaming at the top of `ChatScreen`:
+```ts
 useEffect(() => {
-  channelStore.startStreamingMessagesForChannel(channelId);
+  channelStore.startStreamingMessagesForChannel(route.params.channelId);
   return () => {
     channelStore.stopStreamingCurrentChannelMessages();
   }
 }, [])
 ```
+This means that, when you tap a channel, the messages for that channel start steaming, and when you back out of the screen, they stop streaming.
 
-6. Munge the messages in `Chat` into the Gifted Chat format:
+Pass the messages from `ChatScreen` to `Chat`, adding a messages prop:
+```diff
+<Chat
+  user={authenticationStore.user}
+  onSendMessage={channelStore.sendMessage}
+++  messages={channelStore.currentChannelMessagesForList}
+  channelId={channelId}
+/>
 ```
+
+Of course, add `messages` to the `Chat` props list, too- then you'll need to delete the state variable from `Chat` of the same name.
+
+Munge the messages in `Chat` into the Gifted Chat format:
+```ts
 const myMessages = useMemo(() => {
   return messages.reverse().map((message) => ({
     _id: message.id,
@@ -216,24 +251,27 @@ const myMessages = useMemo(() => {
   }))
 }, [messages])
 ```
-(you'll need to add a `messages` prop to `Chat` and pass that in from `ChatScreen`, too)
-7. Update the props going into GiftedChat:
-```
+
+Update the props going into GiftedChat:
+```diff
 <GiftedChat
-  messages={myMessages}
+--messages={messages}
+++messages={myMessages}
   onSend={onSend}
   renderMessage={renderMessage}
   user={{
-    _id: user.uid,
+    _id: user ? user.uid : null,
   }}
 />
 ```
 
-**TEST IT**: You should be able to send and see messages!
+Delete the `useEffect` that set the default message, as well.
+
+🏃**Try it!**: You should be able to send and see messages!
 
 ### TIP
-If you get angry error messages about auth initialization, update App.js as such:
-```
+If you get angry error messages about auth initialization, update App.js as such, adding the try/ catch:
+```ts
 try  {
   initializeAuth(app,
     {
@@ -241,4 +279,14 @@ try  {
     }
   )
 } catch (e) {}
+```
+
+OR
+
+Disable the logbox warnings. Put this in **App.js**
+```ts
+import { LogBox } from "react-native"
+
+// ...
+LogBox.ignoreLogs(['Firebase: Error (auth/already-initialized).'])
 ```
