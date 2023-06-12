@@ -42,9 +42,9 @@ What we're going to focus on is mangling this template to the point where it bas
 #### a. Pruning and visual tweaks
 The four tabs you see after "logging in" are set by DemoNavigator. We're going to keep the `PodcastList` and `Debug` tabs, and use them for "Channels" and "Settings".
 
-In **app/navigators/DemoNavigator.tsx**, delete the "DemoShowroom" and "DemoCommunity" tabs by deleting the entire `<Tab.Screen>` components with those names.
+- [ ] In **app/navigators/DemoNavigator.tsx**, delete the "DemoShowroom" and "DemoCommunity" tabs by deleting the entire `<Tab.Screen>` components with those names.
 
-Then, fix the icons and names for the remaining tabs. Rename them "Channels" and "Settings", and set the icons to "community" and "settings", e.g.,
+- [ ] Then, fix the icons and names for the remaining tabs. Rename them "Channels" and "Settings", and set the icons to "community" and "settings", e.g.,
 ```diff
 <Tab.Screen
   name="DemoPodcastList"
@@ -66,23 +66,23 @@ Then, fix the icons and names for the remaining tabs. Rename them "Channels" and
 #### b. Fix just enough names to not drive us nuts
 We're going to just fix the names of the files we'll be working on the most, so we don't have to think about podcasts when we really want to think about channels.
 
-In **DemoNavigator.tsx**, set `DemoTabParamList` to:
+- [ ] In **DemoNavigator.tsx**, set `DemoTabParamList` to:
 ```ts
 export type DemoTabParamList = {
   ChannelList: undefined
   Settings: undefined
 }
 ```
-Rename `DemoPodcastListScreen` to `ChannelListScreen` (rename file and the component name)
+- [ ] Rename `DemoPodcastListScreen` to `ChannelListScreen` (rename file and the component name)
 After this, the declaration should look like:
 ```ts
 export const ChannelListScreen: FC<DemoTabScreenProps<"ChannelList">> = observer(
 ```
 "ChannelList" corresponds to the `DemoTabParamList` type.
-- Rename `DemoDebugScreen` to `SettingsScreen` (rename file and the component name)
-- Update the imports/ exports accordingly in **screens/index.ts**
-- Update the imports in **DemoNavigator.tsx** to reference `ChannelListScreen` and `SettingsScreen`
-- Update their references in `DemoNavigator`, e.g.,
+- [ ] Rename `DemoDebugScreen` to `SettingsScreen` (rename file and the component name)
+- [ ] Update the imports/ exports accordingly in **screens/index.ts**
+- [ ] Update the imports in **DemoNavigator.tsx** to reference `ChannelListScreen` and `SettingsScreen`
+- [ ] Update their references in `DemoNavigator`, e.g.,
 ```diff
  <Tab.Screen
 --  name="DemoPodcastList"
@@ -90,12 +90,13 @@ export const ChannelListScreen: FC<DemoTabScreenProps<"ChannelList">> = observer
 ++  name="ChannelList"
 ++  component={ChannelListScreen}
 ```
-### 2. Stub out the ChannelListScreen
-We want a traditional, fixed navigation header with a list of "channels". We'll stub this all out with mock data in the `ChannelListScreen`.
 
 🏃**Try it!** No visual changes, but the two tabs should still work.
 
-In **ChannelListScreen.tsx**, delete the `EpisodeCard` component (below `ChannelListScreen`) with a simple thing that displays the name of a channel:
+### 2. Stub out the ChannelListScreen
+We want a traditional, fixed navigation header with a list of "channels". We'll stub this all out with mock data in the `ChannelListScreen`.
+
+- [ ] In **ChannelListScreen.tsx**, delete the `EpisodeCard` component (below `ChannelListScreen`) with a simple thing that displays the name of a channel:
 ```ts
 const ChannelItem = observer(function ChannelItem({
   channel,
@@ -107,12 +108,12 @@ const ChannelItem = observer(function ChannelItem({
   return <ListItem bottomSeparator onPress={onPress} text={`#${channel.name}`} />
 })
 ```
-Update your imports to include `ListItem`, another component from the Ignite component library:
+- [ ] Update your imports to include `ListItem`, another component from the Ignite component library:
 ```ts
 import { /** ... **/ ListItem } from "../components"
 ```
 
-Delete the entire contents of `ChannelListScreen`, replace them with this:
+- [ ] Delete the entire contents of `ChannelListScreen`, replace them with this:
 ```ts
   // ignite syntactic sugar for React Nav's screen prop access
   useHeader({
@@ -145,12 +146,12 @@ Delete the entire contents of `ChannelListScreen`, replace them with this:
   )
 ```
 
-You'll need a new import, too:
+- [ ] You'll need a new import, too:
 ```ts
 import { useHeader } from 'app/utils/useHeader'
 ```
 
-Finally, make a canned list of channels at the top of the file, like:
+- [ ] Finally, make a canned list of channels at the top of the file, like:
 ```ts
 const channels = [
 {
@@ -181,9 +182,9 @@ c. There's still some extra space coming from `$flatListContentContainer` style.
 ### 3. Add the stub for the chats screen
 Even though we don't have chats, or real channels, we an still put a placeholder screen for the chat to show up when we tap on the channel.
 
-Generate a new screen stub in your terminal `npx ignite-cli generate screen ChatScreen` (you should be in the root of the project folder).
+- [ ] Generate a new screen stub in your terminal `npx ignite-cli generate screen ChatScreen` (you should be in the root of the project folder).
 
-Then add a new screen with parameter types in `AppNavigator`:
+- [ ] Then add a new screen with parameter types in `AppNavigator`:
 ```ts
 export type AppStackParamList = {
   Chat: { channelName: string },
@@ -191,7 +192,9 @@ export type AppStackParamList = {
 }
 ```
 #### a. Access the route parameter in the ChatScreen
-`ChatScreen` will just be a stub for now with no content, but we will at least read in a parameter when we push the screen on the stack for the channel. Set up `ChatScreen` like this:
+`ChatScreen` will just be a stub for now with no content, but we will at least read in a parameter when we push the screen on the stack for the channel. 
+
+- [ ] Set up `ChatScreen` like this:
 ```ts
 export const ChatScreen: FC<AppStackScreenProps<"Chat">> = observer(function ChatScreen() {
   const route = useRoute<AppStackScreenProps<"Chat">['route']>();
@@ -210,7 +213,7 @@ export const ChatScreen: FC<AppStackScreenProps<"Chat">> = observer(function Cha
 })
 ```
 
-You'll need to add some imports, too:
+- [ ] You'll need to add some imports, too:
 ```ts
 import { useNavigation, useRoute } from "@react-navigation/native"
 import { useHeader } from 'app/utils/useHeader'
@@ -218,17 +221,17 @@ import { useHeader } from 'app/utils/useHeader'
 The default type will be all red-squiggled, fine to delete that
 
 #### b. Use the route parameter when tapping a channel in ChannelListScreen
-Add the following at the very top of the `ChannelListScreen` component:
+- [ ] Add the following at the very top of the `ChannelListScreen` component:
 ```ts
 const navigation =  useNavigation<NavigationProp<AppStackParamList>>()
 ```
-Update your imports accordingly:
+- [ ] Update your imports accordingly:
 ```ts
 import { NavigationProp, useNavigation } from "@react-navigation/native"
 import { AppStackParamList } from 'app/navigators'
 ```
 
-Update the `ChannelItem` `onPress` to navigate to the Chat screen:
+- [ ] Update the `ChannelItem` `onPress` to navigate to the Chat screen:
 ```diff
 <ChannelItem
   key={item.id}
@@ -239,9 +242,11 @@ Update the `ChannelItem` `onPress` to navigate to the Chat screen:
 🏃**Try it!** Now you should be able to navigate between the channel list and the channel
 
 ### 4. A little cleanup
-In `AppNavigator`, change the logged in `initialRouteName` to `Demo` (instead of `Welcome`). Now, our navigation is basically 100% of what our final app will have. Login, logout, go to channels, it's all there.
+- [ ] In `AppNavigator`, change the logged in `initialRouteName` to `Demo` (instead of `Welcome`). 
 
-Also, those tab bars are ugly on web, fix in `DemoNavigator` by adding this to the `screenOptions`:
+Now, our navigation is basically 100% of what our final app will have. Login, logout, go to channels, it's all there.
+
+- [ ] Also, those tab bars are ugly on web, fix in `DemoNavigator` by adding this to the `screenOptions`:
 ```ts
 tabBarLabelPosition: "below-icon",
 ```
