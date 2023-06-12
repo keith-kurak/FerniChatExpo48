@@ -16,7 +16,7 @@ We now have some Firebase code to read/ write chat messages for a channel, let's
 #### a. Fix those types!
 Remember where we set the parameters to use `channelName`? Now it should be `channelId`, so we can read info about the channel from the store while on the chat screen.
 
-Fix `AppStackParamList` in **AppNavigator.tsx**:
+- [ ] Fix `AppStackParamList` in **AppNavigator.tsx**:
 ```diff
 export type AppStackParamList = {
   Welcome: undefined
@@ -29,7 +29,7 @@ export type AppStackParamList = {
 }
 ```
 
-Update onPress in `ChannelListScreen` to pass channel ID:
+- [ ] Update onPress in `ChannelListScreen` to pass channel ID:
 ```ts
 <ChannelItem
   key={item.id}
@@ -43,7 +43,7 @@ Update onPress in `ChannelListScreen` to pass channel ID:
 `ChatScreen` is still referencing `channelName`, though...
 
 #### b. A helper for the chat screen.
-Add a new view function to `ChannelStore`:
+- [ ] Add a new view function to `ChannelStore`:
 ```ts
 channelForId(id) {
   return self.channels.find(c => c.id === id);
@@ -51,7 +51,7 @@ channelForId(id) {
 ```
 This is just for convenience. These parameterized views don't cache, BTW.
 
-In `ChatScreen`, use the ID to get the title:
+- [ ] In `ChatScreen`, use the ID to get the title:
 ```ts
 const channelId = route.params.channelId;
 
@@ -70,7 +70,7 @@ So we can see some progress before coding everything, we'll implement "send" fir
 #### a. Update ChannelStore
 In a bigger app, I'd probably put messages in their own stores and page them out of a list by channel ID, but we're keeping things simple and putting everything in the `ChannelStore`.
 
-Add `sendMessage` to the actions in `ChannelStore`:
+- [ ] Add `sendMessage` to the actions in `ChannelStore`:
 ```ts
 const sendMessage = flow(function* sendMessage({ user, text, channelId }) {
   const db = getFirestore();
@@ -90,7 +90,7 @@ const sendMessage = flow(function* sendMessage({ user, text, channelId }) {
 });
 ```
 
-There's new imports, too:
+- [ ] There's new imports, too:
 ```ts
 import {
   collection,
@@ -104,7 +104,7 @@ import {
 ```
 
 #### b. Update ChatScreen
-Add `useStores` to `ChatScreen`, pass the relevant stuff to `Chat`:
+- [ ] Add `useStores` to `ChatScreen`, pass the relevant stuff to `Chat`:
 ```ts
 const { channelStore, authenticationStore } = useStores()
 
@@ -117,12 +117,12 @@ const { channelStore, authenticationStore } = useStores()
 />
 ```
 
-Update parameters in `Chat` component inside of **ChatScreen.ts**:
+- [ ] Update parameters in `Chat` component inside of **ChatScreen.ts**:
 ```ts
 function Chat({ onSendMessage, user, channelId }) {
 ```
 
-Inside the `Chat` component still, wrap the sending stuff into a callback and pass that into `GiftedChat`:
+- [ ] Inside the `Chat` component still, wrap the sending stuff into a callback and pass that into `GiftedChat`:
 ```ts
 const onSend = useCallback((messages = []) => {
   onSendMessage({user, text: messages[0].text, channelId })
@@ -145,9 +145,9 @@ const onSend = useCallback((messages = []) => {
 ### 3. Stream messages and view them
 Finally, we'll stream messages from a chat much like we did with channels.
 #### a. Wire up a message model
-Run `npx ignite-cli generate model Message` to create the `MessageModel`.
+- [ ] Run `npx ignite-cli generate model Message` to create the `MessageModel`.
 
-Setup the props as such in `MessageModel`:
+- [ ] Setup the props as such in `MessageModel`:
 ```ts
   .props({
     id: types.identifier,
@@ -160,19 +160,19 @@ Setup the props as such in `MessageModel`:
 
 #### b. Stream the current channel's messages in ChannelStore
 
-In `ChannelStore` add a prop for the messages:
+- [ ] In `ChannelStore` add a prop for the messages:
 ```ts
   currentChannelMessages: types.array(MessageModel),
 ```
 
-Add a view for the messages:
+- [ ] Add a view for the messages:
 ```ts
 get currentChannelMessagesForList() {
   return sortBy(self.currentChannelMessages.slice(), m => m.time);
 }
 ```
 
-Add an action in the first action block for updating them:
+- [ ] Add an action in the first action block for updating them:
 ```ts
 updateCurrentChannelMessages(querySnapshot) {
   self.currentChannelMessages.clear();
@@ -191,7 +191,7 @@ updateCurrentChannelMessages(querySnapshot) {
 }
 ```
 
-Add actions for starting and stopping streaming. These will be used when entering the chat screen for a particular channel:
+- [ ] Add actions for starting and stopping streaming. These will be used when entering the chat screen for a particular channel:
 ```ts
 let unsubscribeFromChannelMessagesFeed; // we could later use this to tear down on logout... or something
 const startStreamingMessagesForChannel = (channelId) => {
@@ -214,7 +214,7 @@ const stopStreamingCurrentChannelMessages = () => {
 Be sure to return them with the other actions at the end of the actions block.
 
 #### c. Wire the streamed messages to ChatScreen
-Setup an effect to start and stop streaming at the top of `ChatScreen`:
+- [ ] Setup an effect to start and stop streaming at the top of `ChatScreen`:
 ```ts
 useEffect(() => {
   channelStore.startStreamingMessagesForChannel(route.params.channelId);
@@ -225,7 +225,7 @@ useEffect(() => {
 ```
 This means that, when you tap a channel, the messages for that channel start steaming, and when you back out of the screen, they stop streaming.
 
-Pass the messages from `ChatScreen` to `Chat`, adding a messages prop:
+- [ ] Pass the messages from `ChatScreen` to `Chat`, adding a messages prop:
 ```diff
 <Chat
   user={authenticationStore.user}
@@ -235,9 +235,9 @@ Pass the messages from `ChatScreen` to `Chat`, adding a messages prop:
 />
 ```
 
-Of course, add `messages` to the `Chat` props list, too- then you'll need to delete the state variable from `Chat` of the same name.
+- [ ] Of course, add `messages` to the `Chat` props list, too- then you'll need to delete the state variable from `Chat` of the same name.
 
-Munge the messages in `Chat` into the Gifted Chat format:
+- [ ] Munge the messages in `Chat` into the Gifted Chat format:
 ```ts
 const myMessages = useMemo(() => {
   return messages.reverse().map((message) => ({
@@ -252,7 +252,7 @@ const myMessages = useMemo(() => {
 }, [messages])
 ```
 
-Update the props going into GiftedChat:
+- [ ] Update the props going into GiftedChat:
 ```diff
 <GiftedChat
 --messages={messages}
@@ -265,7 +265,7 @@ Update the props going into GiftedChat:
 />
 ```
 
-Delete the `useEffect` that set the default message, as well.
+- [ ] Delete the `useEffect` that set the default message, as well.
 
 🏃**Try it!**: You should be able to send and see messages!
 
