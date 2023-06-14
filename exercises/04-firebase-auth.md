@@ -7,6 +7,8 @@ Make the login screen actually work, using Firebase email/ password authenticati
 3. Wire-up `AuthenticationStore` to Firebase
 4. Add basic "must be authenticated" security to the security rules (turn off test mode).
 ## Useful info
+- [Firebase authentication methods](https://firebase.google.com/docs/auth)
+- [Firebase email/ password auth](https://firebase.google.com/docs/auth/web/password-auth)
 
 ## How to do it
 ### 1. Setup email/password auth in Firebase Console

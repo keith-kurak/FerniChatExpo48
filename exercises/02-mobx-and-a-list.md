@@ -6,6 +6,7 @@ Initialize your MobX state tree model with a canned list of channels and display
 2. Customize stores to include channel properties
 3. Wire up Add Channel functionality to MST stores
 ## Useful info
+- [MobX State Tree concepts](https://mobx-state-tree.js.org/concepts/trees)
 
 ## Since you've been gone
 We've cleaned up some filenames, deleted the screens that we don't need anymore, and added a button and dialog for adding a channel to the list, but it doesn't do anything yet.

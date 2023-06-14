@@ -7,6 +7,7 @@ We now have some Firebase code to read/ write chat messages for a channel, let's
 3. Add support for streaming messages into ChannelsStore
 4. Read messages onto ChatScreen
 ## Useful info
+- [React Native Gifted Chat](https://github.com/FaridSafi/react-native-gifted-chat)
 
 ## Since you've been gone
 - Not a whole lot... we added a loading overlay for use while logging in.

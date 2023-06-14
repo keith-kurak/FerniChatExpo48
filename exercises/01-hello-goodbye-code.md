@@ -8,6 +8,7 @@ Try out the ignite template and make some modifications to pare things down a bi
 4. Rename our tabs that we'll use for the rest of the time
 5. Make sure it all still works
 ## Useful info
+- [Ignite CLI commands](https://github.com/infinitered/ignite)
 ### Node 18.x compatibility issue
 If you get a weird SSL error when starting, do this:
 

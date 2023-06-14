@@ -7,6 +7,8 @@ Switch from your canned list of channels to reading/ writing them from Firebase.
 3. Read channels from Firebase into MST store
 4. Wire up Add Channel to Firebase
 ## Useful info
+- [Structuring data with Firebase](https://firebase.google.com/docs/database/web/structure-data)
+- [Using Firebase with Expo- JS vs Native SDK](https://docs.expo.dev/guides/using-firebase/#using-firebase-js-sdk)
 
 ## Since you've been gone
 - We added the chat screen, but just because we could and it looks fun. We don't need it yet.
